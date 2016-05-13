@@ -1,0 +1,59 @@
+{% load i18n %}
+{% load cycle from debug_toolbar_compat %}
+<h4>{% trans "Current user" %}</h4>
+
+{% if current %}
+  <table>
+    <thead>
+      <tr>{% for x,y in current %}<th>{{ x }}</th>{% endfor %}</tr>
+    </thead>
+    <tbody>
+      <tr>{% for x,y in current %}<td>{{ y }}</td>{% endfor %}</tr>
+    </tbody>
+  </table>
+  <form method="POST" action="{% url "djdt:user_panel_logout" %}">
+    <button type="submit">{% trans "Log out" %}</button>
+  </form>
+{% else %}
+  <p>{% trans "Not logged in." %}</p>
+{% endif %}
+
+<h4>{% trans "Recent users" %}</h4>
+<table>
+  <thead>
+    <tr>
+      <th>{% trans "User" %}</th>
+      <th>{% trans "Full name" %}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr class="{% cycle 'djDebugOdd' 'djDebugEven' %}">
+      <td>{{ user }}</td>
+      <td>{{ user.get_full_name }}</td>
+      <td>
+        <form method="POST" action="{% url "djdt:user_panel_login_pk" pk=user.pk %}">
+          {% csrf_token %}
+          {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+          {% endif %}
+          <button type="submit">{% trans "Log in" %}</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<h4>{% trans "Login as any user" %}</h4>
+
+<form method="POST" action="{% url "djdt:user_panel_login_credentials" %}">
+  {{ form.as_p }}
+  {% csrf_token %}
+  {% if next %}
+    <input type="hidden" name="next" value="{{ next }}">
+  {% endif %}
+  <button type="submit">{% trans "Log in" %}</button>
+</form>
