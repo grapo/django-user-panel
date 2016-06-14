@@ -1,5 +1,6 @@
 from django import forms
-from django.contrib.auth import get_user_model, _get_backends
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -26,7 +27,7 @@ class UserForm(forms.Form):
             auth = {'username': val}
         try:
             self.user = User.objects.get(**auth)
-            backend, backend_path = _get_backends(return_tuples=True)[0]
+            backend_path = settings.AUTHENTICATION_BACKENDS[0]
             self.user.backend = backend_path
         except User.DoesNotExist:
             raise forms.ValidationError(_('User does not exist'))
