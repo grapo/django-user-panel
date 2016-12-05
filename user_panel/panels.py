@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
 from django.conf.urls import url
+from django.db.models import Count
 from django.contrib.auth import get_user_model, REDIRECT_FIELD_NAME
 
 from debug_toolbar.panels import Panel
@@ -39,5 +40,5 @@ class UserPanel(Panel):
         self.record_stats({
             'form': UserForm(),
             'next': redirect_to,
-            'users': User.objects.order_by('-last_login')[:10],
+            'users': User.objects.annotate(null_last_login=Count('last_login')).order_by('-null_last_login', '-last_login')[:10],
             'current': current})
