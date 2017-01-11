@@ -10,8 +10,6 @@ from django.conf import settings
 from .forms import UserForm
 from .decorators import debug_required
 
-User = get_user_model()
-
 
 @debug_required
 @csrf_exempt
@@ -30,7 +28,7 @@ def login_credentials(request):
 @csrf_exempt
 @require_POST
 def login_pk(request, pk):
-    user = get_object_or_404(User, pk=pk)
+    user = get_object_or_404(get_user_model(), pk=pk)
     backend_path = settings.AUTHENTICATION_BACKENDS[0]
     user.backend = backend_path
 
