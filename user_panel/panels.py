@@ -15,7 +15,7 @@ class UserPanel(Panel):
 
     @property
     def nav_subtitle(self):
-        if self.toolbar.request.user.is_authenticated():
+        if self.toolbar.request.user.is_authenticated:
             return self.toolbar.request.user
         else:
             return _('Not authenticated')
@@ -33,7 +33,7 @@ class UserPanel(Panel):
         User = get_user_model()
         redirect_to = request.GET.get(REDIRECT_FIELD_NAME, '')
 
-        if hasattr(request, 'user') and request.user.is_authenticated():
+        if hasattr(request, 'user') and request.user.is_authenticated:
             for field in User._meta.fields:
                 current.append(
                     (field.attname, getattr(request.user, field.attname)))
